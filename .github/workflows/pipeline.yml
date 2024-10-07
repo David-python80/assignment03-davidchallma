@@ -16,22 +16,29 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout code / fetch code
-        run:  echo 'Fetch code'
+        uses:  actions/checkout@v4
 
       - name: setup Node.js version
-        run:  echo 'setup nodejs'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Install node packages
-        run:  echo 'Install node packages'
+        run:  npm Install 
 
       - name: Restore database
-        run:  echo 'Restore database'
+        run:  cat db.BACKUP.json > db.json
 
       - name: Start application
-        run:  echo 'start application'
+        run:  npm run server &
 
       - name: Run tests
-        run:  echo 'run tests'
+        run:  npm run run-tests
 
       - name: Save test run artifacts
-        run:  echo 'Save test run artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: ./playwright-report
+          if-no-files-found: warn
+          include-hidden-files: false
