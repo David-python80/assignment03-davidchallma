@@ -24,7 +24,7 @@ jobs:
           node-version: '20'
 
       - name: Install node packages
-        run:  npm Install 
+        run:  npm install 
 
       - name: Restore database
         run:  cat db.BACKUP.json > db.json
