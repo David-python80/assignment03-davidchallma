@@ -35,7 +35,7 @@ test.describe('Backends Tests', () => {
   });
 
   test('Test case 01 - Get all rooms', async ({ request }) => {
-    const respRooms = await request.get(`${BASE_URL}/api/rooms`, {
+    const respRooms = await request.get(`${BASE_URL}/rooms`, {
       headers: {
         "X-user-auth": JSON.stringify({
           username: "tester02", // This should match the login username
@@ -58,7 +58,7 @@ test.describe('Backends Tests', () => {
     expect(respRooms.status()).toBe(200); // Verify that status is 200
   });
   test('Test case 02 - Create Room', async ({ request }) => {
-    const response = await request.post(`${BASE_URL}/api/room/new`, {
+    const response = await request.post(`${BASE_URL}/room/new`, {
       headers: {
         'X-user-auth': JSON.stringify({
           username: 'tester02',
