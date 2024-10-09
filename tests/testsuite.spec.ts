@@ -15,7 +15,7 @@ test.describe('Backends Tests', () => {
   let tokenValue: string;
 
   test.beforeAll('Test case LogInGetToken', async ({ request }) => {
-    const respToken = await request.post(`${BASE_URL}/api/login`, {
+    const respToken = await request.post(`${BASE_URL}/login`, {
       data: {
         username: "tester02", // Ensure this username is correct
         password: "sppm7qncqmVft5uECkwjLcLdEJGzM3Cw" // Ensure this password is correct
