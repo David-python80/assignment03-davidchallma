@@ -1,4 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './pages/login-page';
+import { DashboardPage } from './pages/dashboard-page';
+import { BillsPage } from './pages/bills-page';
+import { BillEditPage } from './pages/billEdit.page';
+import { ReservationsPage } from './pages/reservations-page';
+import { ReservationCreatePage } from './pages/reservationCreate-page';
+
+const username: any = process.env.TEST_USERNAME;
+const password: any = process.env.TEST_PASSWORD;
+
 const BASE_URL = 'http://localhost:3000';
 
 test.describe('Backends Tests', () => {
@@ -42,7 +52,7 @@ test.describe('Backends Tests', () => {
     }
 
     // Only parse JSON if the response is OK
-    const rooms = await respRooms.json(); 
+    const rooms = await respRooms.json();
     console.log(rooms);
     expect(respRooms.ok()).toBeTruthy(); // Ensure response is OK
     expect(respRooms.status()).toBe(200); // Verify that status is 200
@@ -67,5 +77,55 @@ test.describe('Backends Tests', () => {
     });
 
 
+  });
+})
+test.describe('FrontEnd tests', () => {
+
+  test('Test 5 - Create a new reservation', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const reservationsPage = new ReservationsPage(page);
+    const reservationCreatePage = new ReservationCreatePage(page);
+
+    await loginPage.goto();
+    await loginPage.performLogin(username, password);
+
+    await dashboardPage.goToReservationView();
+    await expect(reservationsPage.createReservationButton).toBeVisible();
+    const reservationsBeforeCreate = await reservationsPage.reservationElements.count();
+
+    await reservationsPage.goToCreateReservation();
+    await expect(reservationCreatePage.pageHeading).toBeVisible();
+    await expect(reservationCreatePage.saveButton).toBeVisible();
+    await expect(reservationCreatePage.startDateField).toBeEmpty();
+    await expect(reservationCreatePage.endDateField).toBeEmpty();
+
+    await reservationCreatePage.createNewReservation();
+    await expect(reservationsPage.backButton).toBeVisible();
+    const reservationsAfterCreate = await reservationsPage.reservationElements.count();
+    expect(reservationsAfterCreate - reservationsBeforeCreate).toEqual(1);
+  })
+
+  test('Test 7 - Edit a bill', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const billsPage = new BillsPage(page);
+    const billEditPage = new BillEditPage(page);
+
+    await loginPage.goto();
+    await loginPage.performLogin(username, password);
+
+    await dashboardPage.goToBillsView();
+    const firstBillBeforeEdit = await billsPage.firstBillInList.allTextContents();
+
+    await billsPage.goToEditBill();
+    await expect(billEditPage.pageHeading).toBeVisible();
+    await expect(page.url()).toContain(billEditPage.pageUrl);
+    await billEditPage.editBill();
+
+    await expect(billsPage.backButton).toBeVisible();
+    const firstBillAfterEdit = await billsPage.firstBillInList.allTextContents();
+    await expect(firstBillAfterEdit).not.toBe(firstBillBeforeEdit);
+    await expect(billsPage.createBillButton).toBeVisible();
   });
 })
