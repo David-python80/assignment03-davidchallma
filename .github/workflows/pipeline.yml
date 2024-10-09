@@ -1,13 +1,55 @@
+# name: Pipeline
+# on: 
+#   push:
+#     branches:
+#       - main
+#       - gh-actions
+    
+
+#   pull_request:
+#     branches :
+#       - main
+#       - gh-actions
+
+# jobs: 
+#   run-automated-tests:
+#     runs-on: ubuntu-latest
+#     steps: 
+#       - name: Checkout code / fetch code
+#         uses:  actions/checkout@v4
+
+#       - name: setup Node.js version
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Install node packages
+#         run:  npm install 
+
+#       - name: Restore database
+#         run:  cat db.BACKUP.json > db.json
+
+#       - name: Start application
+#         run:  npm run server &
+
+#       - name: Run tests
+#         run:  npm run run-tests
+
+#       - name: Save test run artifacts
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-test-results
+#           path: ./playwright-report
+#           if-no-files-found: warn
+#           include-hidden-files: false
 name: Pipeline
 on: 
   push:
     branches:
       - main
       - gh-actions
-    
-
   pull_request:
-    branches :
+    branches:
       - main
       - gh-actions
 
@@ -16,24 +58,26 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout code / fetch code
-        uses:  actions/checkout@v4
+        uses: actions/checkout@v4
 
-      - name: setup Node.js version
+      - name: Setup Node.js version
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install node packages
-        run:  npm install 
+        run: npm install --legacy-peer-deps
 
       - name: Restore database
-        run:  cat db.BACKUP.json > db.json
+        run: cat db.BACKUP.json > db.json
 
       - name: Start application
-        run:  npm run server &
+        run: |
+          npm run server &
+          sleep 10 # Adjust this as needed
 
       - name: Run tests
-        run:  npm run run-tests
+        run: npm run run-tests | tee test-output.log
 
       - name: Save test run artifacts
         uses: actions/upload-artifact@v4
@@ -42,3 +86,9 @@ jobs:
           path: ./playwright-report
           if-no-files-found: warn
           include-hidden-files: false
+
+      - name: Save test output logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: test-output.log
