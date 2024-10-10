@@ -5,6 +5,8 @@ import { BillsPage } from './pages/bills-page';
 import { BillEditPage } from './pages/billEdit.page';
 import { ReservationsPage } from './pages/reservations-page';
 import { ReservationCreatePage } from './pages/reservationCreate-page';
+import { config } from 'dotenv';
+config();
 
 const username: any = process.env.TEST_USERNAME;
 const password: any = process.env.TEST_PASSWORD;
@@ -15,10 +17,10 @@ test.describe('Backends Tests', () => {
   let tokenValue: string;
 
   test.beforeAll('Test case LogInGetToken', async ({ request }) => {
-    const respToken = await request.post(`${BASE_URL}/login`, {
+    const respToken = await request.post(`${BASE_URL}/api/login`, {
       data: {
-        username: "tester02", // Ensure this username is correct
-        password: "sppm7qncqmVft5uECkwjLcLdEJGzM3Cw" // Ensure this password is correct
+        username: process.env.TEST_USERNAME,
+        password: process.env.TEST_PASSWORD
       }
     });
 
@@ -35,7 +37,7 @@ test.describe('Backends Tests', () => {
   });
 
   test('Test case 01 - Get all rooms', async ({ request }) => {
-    const respRooms = await request.get(`${BASE_URL}/rooms`, {
+    const respRooms = await request.get(`${BASE_URL}/api/rooms`, {
       headers: {
         "X-user-auth": JSON.stringify({
           username: "tester02", // This should match the login username
@@ -58,7 +60,7 @@ test.describe('Backends Tests', () => {
     expect(respRooms.status()).toBe(200); // Verify that status is 200
   });
   test('Test case 02 - Create Room', async ({ request }) => {
-    const response = await request.post(`${BASE_URL}/room/new`, {
+    const response = await request.post(`${BASE_URL}/api/room/new`, {
       headers: {
         'X-user-auth': JSON.stringify({
           username: 'tester02',
