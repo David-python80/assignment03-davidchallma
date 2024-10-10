@@ -17,7 +17,7 @@ test.describe('Backends Tests', () => {
   let tokenValue: string;
 
   test.beforeAll('Test case LogInGetToken', async ({ request }) => {
-    const respToken = await request.post(`${BASE_URL}/api/login`, {
+    const respToken = await request.post(`${BASE_URL}/login`, {
       data: {
         username: process.env.TEST_USERNAME,
         password: process.env.TEST_PASSWORD
@@ -37,7 +37,7 @@ test.describe('Backends Tests', () => {
   });
 
   test('Test case 01 - Get all rooms', async ({ request }) => {
-    const respRooms = await request.get(`${BASE_URL}/api/rooms`, {
+    const respRooms = await request.get(`${BASE_URL}/rooms`, {
       headers: {
         "X-user-auth": JSON.stringify({
           username: "tester02", // This should match the login username
@@ -60,7 +60,7 @@ test.describe('Backends Tests', () => {
     expect(respRooms.status()).toBe(200); // Verify that status is 200
   });
   test('Test case 02 - Create Room', async ({ request }) => {
-    const response = await request.post(`${BASE_URL}/api/room/new`, {
+    const response = await request.post(`${BASE_URL}/room/new`, {
       headers: {
         'X-user-auth': JSON.stringify({
           username: 'tester02',
@@ -81,9 +81,9 @@ test.describe('Backends Tests', () => {
 
   });
 })
-test.describe('FrontEnd tests', () => {
+test.describe('FrontEnd Tests', () => {
 
-  test('Test 5 - Create a new reservation', async ({ page }) => {
+  test('Test 3 - Create a new reservation', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const reservationsPage = new ReservationsPage(page);
@@ -108,7 +108,7 @@ test.describe('FrontEnd tests', () => {
     expect(reservationsAfterCreate - reservationsBeforeCreate).toEqual(1);
   })
 
-  test('Test 7 - Edit a bill', async ({ page }) => {
+  test('Test 4 - Edit a bill', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const billsPage = new BillsPage(page);

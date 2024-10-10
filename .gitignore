@@ -4,7 +4,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /tests-examples/
-.env
-# /pipeline.yml/
-# .github\workflows
+
 
