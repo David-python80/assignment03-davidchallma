@@ -1,4 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
+import { config } from 'dotenv';
+config();
 
 export class ReservationsPage {
     readonly page: Page;

@@ -1,5 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { config } from 'dotenv';
+config();
 
 const locale = 'sv-SE';
 
