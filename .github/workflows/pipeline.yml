@@ -1,47 +1,3 @@
-# name: Pipeline
-# on: 
-#   push:
-#     branches:
-#       - main
-#       - gh-actions
-    
-
-#   pull_request:
-#     branches :
-#       - main
-#       - gh-actions
-
-# jobs: 
-#   run-automated-tests:
-#     runs-on: ubuntu-latest
-#     steps: 
-#       - name: Checkout code / fetch code
-#         uses:  actions/checkout@v4
-
-#       - name: setup Node.js version
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: '20'
-
-#       - name: Install node packages
-#         run:  npm install 
-
-#       - name: Restore database
-#         run:  cat db.BACKUP.json > db.json
-
-#       - name: Start application
-#         run:  npm run server &
-
-#       - name: Run tests
-#         run:  npm run run-tests
-
-#       - name: Save test run artifacts
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: playwright-test-results
-#           path: ./playwright-report
-#           if-no-files-found: warn
-#           include-hidden-files: false
 name: Pipeline
 on: 
   push:
@@ -51,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-      - gh-actions
-
 jobs: 
   run-automated-tests:
     runs-on: ubuntu-latest
@@ -66,12 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install node packages
-        run: 
-          npm install --legacy-peer-deps
-          npm install @faker-js/faker
-
-      - name: Restore database
-        run: cat db.BACKUP.json > db.json
+        run:  npm install 
 
       - name: Start application
         run: |
@@ -82,11 +31,10 @@ jobs:
         run: echo "BASE_URL=http://localhost:3000" > .env
 
       - name: Run tests
-        run: npm run run-tests | tee test-output.log
         env:
-            TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-            TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-            run: npm run run-tests
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        run: npm run run-tests
 
       - name: Save test run artifacts
         uses: actions/upload-artifact@v4
