@@ -69,9 +69,6 @@ jobs:
         run: 
           npm install --legacy-peer-deps
           npm install @faker-js/faker
-      
-      - name: Load .env file
-        run: echo "BASE_URL=http://localhost:3000" > .env
 
       - name: Restore database
         run: cat db.BACKUP.json > db.json
@@ -80,9 +77,16 @@ jobs:
         run: |
           npm run server &
           sleep 10 # Adjust this as needed
+      
+      - name: Load .env file
+        run: echo "BASE_URL=http://localhost:3000" > .env
 
       - name: Run tests
         run: npm run run-tests | tee test-output.log
+        env:
+            TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+            TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+            run: npm run run-tests
 
       - name: Save test run artifacts
         uses: actions/upload-artifact@v4
