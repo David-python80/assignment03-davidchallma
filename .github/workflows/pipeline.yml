@@ -19,19 +19,24 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name:  Install dependencies
         run:  npm install 
       
       - name: Install Playwright browsers
         run: npx playwright install
       
-      - name: Start application
-        run: |
-          npm run server &
-          sleep 10 # Adjust this as needed
+      - name: Pull docker image
+        run: docker pull rasilva1986/my-vue-app:v1
+
+      # Step 5: Start application
       
-      - name: Load .env file
-        run: echo "BASE_URL=http://localhost:3000" > .env
+      - name: Start application
+        run: docker run --name hotelapp -d -p 3000:3000 rasilva1986/my-vue-app:v1
+
+      # Step 6: Wait for application to start
+      
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:3000/
 
       - name: Run tests
         env:
