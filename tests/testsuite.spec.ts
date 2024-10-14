@@ -19,8 +19,8 @@ test.describe('Backends Tests', () => {
   test.beforeAll('Test case LogInGetToken', async ({ request }) => {
     const respToken = await request.post(`${BASE_URL}/api/login`, {
       data: {
-        username: process.env.TEST_USERNAME,
-        password: process.env.TEST_PASSWORD
+        username: `${process.env.TEST_USERNAME}`,
+        password: `${process.env.TEST_PASSWORD}`
       }
     });
 
